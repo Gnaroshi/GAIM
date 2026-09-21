@@ -10,6 +10,7 @@ import time
 import traceback
 
 from .backend import LocalModel, call_seed
+from .environment import configure, require_gpu_mapping
 from .perturbations import (build_target_messages, build_attacker_messages,
                             parse_note, validate_note, score_answer, literal_controls)
 
@@ -61,6 +62,8 @@ def main() -> None:
     parser.add_argument("--worker", type=int, required=True)
     args = parser.parse_args()
     manifest = json.loads((args.run_dir / "run.json").read_text())
+    configure()
+    require_gpu_mapping(manifest["physical_gpus"])
     cfg = manifest["config"]
     questions = read_jsonl(args.run_dir / "questions.jsonl")[args.worker::4]
     path = args.run_dir / f"worker_{args.worker}.jsonl"

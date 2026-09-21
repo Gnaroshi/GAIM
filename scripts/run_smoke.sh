@@ -23,7 +23,6 @@ for suffix in dev train adapters replay; do
     exit 2
   fi
 done
-export CUDA_VISIBLE_DEVICES=4,5,6,7
 export HF_HOME="$PWD/.cache/huggingface"
 export HF_HUB_DISABLE_XET=1
 export TOKENIZERS_PARALLELISM=false

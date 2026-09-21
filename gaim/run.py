@@ -44,9 +44,8 @@ def main() -> None:
     parser.add_argument("--download-only", action="store_true")
     args = parser.parse_args()
     os.chdir(ROOT)
-    from .environment import configure
-    configure()
-    os.environ["CUDA_VISIBLE_DEVICES"] = "4,5,6,7"
+    from .environment import configure, gpu_mask, require_gpu_mapping, child_environment
+    devices = configure()
     os.environ["HF_HOME"] = str(ROOT / ".cache/huggingface")
     os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
     cfg = json.loads(args.config.read_text())
@@ -65,7 +64,7 @@ def main() -> None:
     try:
         fcntl.flock(gpu_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except BlockingIOError:
-        raise SystemExit("Another GAIM run is using GPUs 4,5,6,7")
+        raise SystemExit("Another GAIM run holds this project's GPU lock")
     data_dir = ROOT / cfg["data_dir"]
     dataset_manifest = data_dir / "manifest.json"
     items = [json.loads(line) for line in (data_dir / f"{cfg['split']}.jsonl").read_text().splitlines() if line.strip()]
@@ -81,6 +80,7 @@ def main() -> None:
         if not args.resume:
             raise SystemExit("Run exists. Choose a new directory or pass --resume.")
         manifest = json.loads(manifest_path.read_text())
+        require_gpu_mapping(manifest["physical_gpus"])
         if manifest["config"] != cfg or manifest["question_ids"] != ids:
             raise ValueError("Config/questions differ from saved run; use a new run directory")
         if manifest["dataset_manifest_sha256"] != sha(dataset_manifest) or manifest["code_sha256"] != code_hashes:
@@ -99,7 +99,7 @@ def main() -> None:
             "dataset_manifest": json.loads(dataset_manifest.read_text()),
             "code_sha256": code_hashes, "target_model": cfg["model"], "target_revision": revision,
             "attacker_model": cfg["model"], "attacker_revision": revision,
-            "shared_checkpoint_for_roles": True, "physical_gpus": [4, 5, 6, 7],
+            "shared_checkpoint_for_roles": True, "physical_gpus": list(devices),
             "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "validity_policy": "Syntactic checks are provisional; human review required for confirmed flips.",
             "invalid_candidate_policy": "One generator call; consume target call with clean input; never count as attack success.",
@@ -114,7 +114,7 @@ def main() -> None:
         print("Downloaded. Re-run with --resume and without --download-only.")
         return
     gpu_info = subprocess.check_output([
-        "nvidia-smi", "--id=4,5,6,7", "--query-gpu=index,name,memory.total,memory.used,utilization.gpu", "--format=csv,noheader"
+        "nvidia-smi", f"--id={gpu_mask(devices)}", "--query-gpu=index,name,memory.total,memory.used,utilization.gpu", "--format=csv,noheader"
     ], text=True)
     (run_dir / "gpu_before.txt").write_text(gpu_info)
     print(gpu_info, flush=True)
@@ -134,7 +134,7 @@ def main() -> None:
             handle = (run_dir / f"worker_{worker}.log").open("a")
             handles.append(handle)
             child = subprocess.Popen([sys.executable, "-u", "-m", "gaim.worker", "--run-dir", str(run_dir), "--worker", str(worker)],
-                                     stdout=handle, stderr=subprocess.STDOUT, env=os.environ.copy())
+                                     stdout=handle, stderr=subprocess.STDOUT, env=child_environment(devices))
             children.append(child)
         (run_dir / "processes.json").write_text(json.dumps({"launcher": os.getpid(), "workers": [p.pid for p in children]}, indent=2))
         while any(child.poll() is None for child in children):

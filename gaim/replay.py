@@ -16,6 +16,7 @@ from .backend import LocalModel, call_seed
 from .perturbations import score_answer
 from .worker import append_record, read_jsonl
 from .metrics import review_content_hash
+from .environment import configure, gpu_mask, require_gpu_mapping, child_environment
 
 VARIANTS = ("clean", "random", "independent", "adaptive")
 ROOT = Path(__file__).resolve().parents[1]
@@ -147,7 +148,7 @@ def main():
     args.source_run = args.source_run.resolve()
     args.training_dir = args.training_dir.resolve()
     args.output_dir = args.output_dir.resolve()
-    os.environ["CUDA_VISIBLE_DEVICES"] = "4,5,6,7"
+    devices = configure()
     os.environ["HF_HOME"] = str(ROOT / ".cache/huggingface")
     os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
     source_manifest = json.loads((args.source_run / "run.json").read_text())
@@ -167,12 +168,17 @@ def main():
     if not any(r["condition"] != "baseline" for r in cases):
         raise ValueError("No approved perturbations; review first or explicitly use --allow-provisional for smoke")
     args.output_dir.mkdir(parents=True, exist_ok=True)
+    saved_replay = args.output_dir / "replay.json"
+    if saved_replay.exists():
+        require_gpu_mapping(json.loads(saved_replay.read_text())["physical_gpus"])
     if args.worker is not None:
+        replay_manifest = json.loads(saved_replay.read_text())
+        require_gpu_mapping(replay_manifest["physical_gpus"])
         worker(args, source_manifest, cases)
         return
     with (ROOT / ".gpu.lock").open("w") as gpu_lock:
         fcntl.flock(gpu_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        gpu_info = subprocess.check_output(["nvidia-smi", "--id=4,5,6,7", "--query-gpu=index,memory.used", "--format=csv,noheader"], text=True)
+        gpu_info = subprocess.check_output(["nvidia-smi", f"--id={gpu_mask(devices)}", "--query-gpu=index,memory.used", "--format=csv,noheader"], text=True)
         if any(int(line.split(",")[1].strip().split()[0]) > 2048 for line in gpu_info.strip().splitlines()):
             raise ValueError("A requested GPU is already in use; no other process was stopped")
         # source와 train 문항 겹침을 실제 학습 데이터 원본 ID로 검증한다.
@@ -204,7 +210,8 @@ def main():
                     "source_manifest_sha256": digest(source_manifest), "cases_sha256": digest(cases),
                     "training_manifest_sha256": digest(training_manifest), "training_artifacts_sha256": training_artifacts,
                     "evaluation_type": "fixed perturbation transfer; no new attacks against trained adapters",
-                    "variants": VARIANTS, "base_precision": "bfloat16 for both untrained and adapter inference"}
+                    "variants": VARIANTS, "physical_gpus": list(devices),
+                    "base_precision": "bfloat16 for both untrained and adapter inference"}
         path = args.output_dir / "replay.json"
         if path.exists() and json.loads(path.read_text()) != json.loads(json.dumps(manifest)):
             raise ValueError("Replay configuration changed; use a new output directory")
@@ -218,7 +225,7 @@ def main():
                            "--training-dir", str(args.training_dir), "--output-dir", str(args.output_dir), "--worker", str(index)]
                 if args.allow_provisional:
                     command.append("--allow-provisional")
-                children.append(subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT, env=os.environ.copy()))
+                children.append(subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT, env=child_environment(devices)))
             while any(p.poll() is None for p in children):
                 if any(p.poll() not in (None, 0) for p in children):
                     raise RuntimeError("Replay worker failed; inspect variant logs")

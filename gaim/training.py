@@ -15,7 +15,7 @@ import sys
 import time
 
 from .metrics import aggregate_run
-from .environment import configure
+from .environment import configure, physical_gpus, gpu_mask, require_gpu_mapping, child_environment
 from .perturbations import build_target_messages, literal_controls, validate_note
 
 
@@ -204,7 +204,7 @@ def prepare_training(source_run: str | Path, output_dir: str | Path, *, steps: i
         arm_dir.mkdir()
         (arm_dir / "dataset.jsonl").write_text("".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows), encoding="utf-8")
     info.update({"schema_version": 1, "status": "prepared", "output_dir": str(output), "steps": steps,
-                 "max_seq_length": max_seq_length, "physical_gpus": dict(zip(ARMS, (4, 5, 6, 7))),
+                 "max_seq_length": max_seq_length, "physical_gpus": dict(zip(ARMS, physical_gpus())),
                  "code_sha256": {name: _sha(ROOT / "gaim" / name)
                                   for name in ("training.py", "metrics.py", "perturbations.py", "environment.py")},
                  "dataset_sha256": {arm: _sha(output / arm / "dataset.jsonl") for arm in ARMS},
@@ -235,13 +235,13 @@ def tokenize_example(tokenizer, row: dict, max_seq_length: int) -> dict:
 
 
 def _worker(output: Path, worker: int) -> None:
-    if os.environ.get("CUDA_VISIBLE_DEVICES") != "4,5,6,7":
-        raise ValueError("학습 worker는 physical GPU 4,5,6,7 매핑에서만 실행할 수 있습니다.")
+    configure()
+    manifest = json.loads((output / "training_manifest.json").read_text())
+    require_gpu_mapping([manifest["physical_gpus"][arm] for arm in ARMS])
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, set_seed
     from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 
-    manifest = json.loads((output / "training_manifest.json").read_text())
     arm = ARMS[worker]
     arm_dir = output / arm
     if _sha(arm_dir / "dataset.jsonl") != manifest["dataset_sha256"][arm]:
@@ -317,8 +317,9 @@ def _worker(output: Path, worker: int) -> None:
 def _launch(output: Path, manifest: dict) -> None:
     import fcntl
 
-    env = os.environ.copy()
-    env["CUDA_VISIBLE_DEVICES"] = "4,5,6,7"
+    devices = configure()
+    require_gpu_mapping([manifest["physical_gpus"][arm] for arm in ARMS])
+    env = child_environment(devices)
     env["HF_HOME"] = str(ROOT / ".cache/huggingface")
     env["TOKENIZERS_PARALLELISM"] = "false"
     env["HF_HUB_OFFLINE"] = "1"
@@ -328,8 +329,8 @@ def _launch(output: Path, manifest: dict) -> None:
         try:
             fcntl.flock(gpu_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError as exc:
-            raise ValueError("다른 GAIM 실행이 GPU 4,5,6,7을 사용 중입니다.") from exc
-        gpu_info = subprocess.check_output(["nvidia-smi", "--id=4,5,6,7", "--query-gpu=index,memory.used", "--format=csv,noheader,nounits"], text=True)
+            raise ValueError("다른 GAIM 실행이 이 프로젝트의 GPU 잠금을 사용 중입니다.") from exc
+        gpu_info = subprocess.check_output(["nvidia-smi", f"--id={gpu_mask(devices)}", "--query-gpu=index,memory.used", "--format=csv,noheader,nounits"], text=True)
         (output / "gpu_before.txt").write_text(gpu_info)
         for line in gpu_info.strip().splitlines():
             index, used = [int(value.strip()) for value in line.split(",")]

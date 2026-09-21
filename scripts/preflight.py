@@ -5,7 +5,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from gaim.environment import configure
-configure()
+devices = configure()
 
 import torch
 import bitsandbytes as bnb
@@ -24,7 +24,7 @@ for index in range(4):
         loss = layer(x).square().mean()
         loss.backward()
         assert torch.isfinite(loss) and torch.isfinite(x.grad).all()
-        print(json.dumps({"logical_gpu": index, "physical_gpu": index + 4,
+        print(json.dumps({"logical_gpu": index, "physical_gpu": devices[index],
                           "name": torch.cuda.get_device_name(index), "nf4_forward_backward": "passed"}), flush=True)
         del x, loss, layer
         torch.cuda.empty_cache()

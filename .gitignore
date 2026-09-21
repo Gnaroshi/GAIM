@@ -22,3 +22,6 @@ model-verification.json
 *.egg-info/
 build/
 dist/
+CLAUDE.local.md
+.claude/settings.local.json
+.publication-check/

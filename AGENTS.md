@@ -4,8 +4,9 @@ This is the owner-authorized public research repository https://github.com/Gnaro
 Run commands from this repository's root. Personal server paths are not prerequisites.
 Read README.md and the relevant experiment/result documents before changes. Claude users should read CLAUDE.md when available.
 
-- Only use CUDA physical devices 4,5,6,7. Do not stop other users' processes or change global environments.
-- This frozen runtime assumes four GPUs at those indices. A later operational portability change must preserve the scientific protocol and identify the historical runtime separately.
+- Use only four GPUs allocated to this user. On the original server those are physical devices 4,5,6,7; do not use its devices 0–3. On another server explicitly select its allocated devices with GAIM_CUDA_DEVICES. Do not stop other users' processes or change global environments.
+- GPU selection precedence is GAIM_CUDA_DEVICES, existing CUDA_VISIBLE_DEVICES, then the original default 4,5,6,7. Four unique numeric physical IDs are required. Never change the mapping while resuming a run.
+- The reference-20260921 tag preserves the original execution code. Main includes documented operational changes; keep the scientific protocol unchanged for reproduction.
 - Keep experiment setup, generated data, observed results, and hypothetical examples distinct.
 - Preserve original MedQA questions, choices, answer keys, source IDs and split provenance. Never claim a mirror or derived validation split is the official validation split.
 - Separate syntactic validity from clinically confirmed answer preservation. Model or heuristic checks are provisional; human review is needed before confirmed attack-success claims.

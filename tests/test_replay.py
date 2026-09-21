@@ -189,6 +189,19 @@ class SelectionTests(ReplayFixture):
 
 
 class ReplayProtocolTests(ReplayFixture):
+    def test_replay_records_explicit_gpu_mapping(self):
+        with patch.dict(os.environ, {"GAIM_CUDA_DEVICES": "3,0,2,1"}, clear=True):
+            self.run_main()
+        manifest = json.loads((self.output / "replay.json").read_text())
+        self.assertEqual(manifest["physical_gpus"], [3, 0, 2, 1])
+
+    def test_replay_resume_rejects_changed_gpu_order(self):
+        with patch.dict(os.environ, {"GAIM_CUDA_DEVICES": "0,1,2,3"}, clear=True):
+            self.run_main()
+        with patch.dict(os.environ, {"GAIM_CUDA_DEVICES": "3,2,1,0"}, clear=True):
+            with self.assertRaisesRegex(ValueError, "manifest"):
+                self.run_main()
+
     def test_every_adapter_receives_exact_saved_input_and_same_generation_settings(self):
         original = copy.deepcopy(self.cases)
         calls, output = self.run_main()
