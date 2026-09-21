@@ -1,103 +1,54 @@
-# GAIM — 의료 QA 교란 생성·평가·학습
+# GAIM: 불필요한 문장에 흔들리지 않는 의료 문제 풀이 모델
 
-의료 객관식 문제에 추가 정보를 넣었을 때 답이 바뀌는지 확인하고, 교란 데이터로 추가 학습한 모델이 같은 입력을 더 잘 견디는지 비교하는 대학원 수업 프로젝트입니다.
+의료 문제에 취미나 근거 없는 의견을 붙이면 AI의 답이 바뀌는지 확인합니다. 그런 문장을 포함한 문제로 AI를 추가 학습하면 오답이 줄어드는지도 비교합니다.
 
-**Claude로 재현하려면 [CLAUDE.md](CLAUDE.md)를 먼저 읽으세요.** 환경 준비, 실행 순서와 예상 결과는 [재현 안내서](docs/REPRODUCING_KO.md)에 있습니다. 개인 서버 접속 권한이나 유료 AI API는 필요하지 않습니다. GPU 실행에는 본인이 사용할 수 있는 Linux GPU 서버가 필요합니다.
+## 어떤 모델을 비교하나요?
 
-## 실제로 얻은 결과
+출발점은 **Qwen 팀이 이미 학습해서 공개한 `Qwen3-4B-Instruct-2507`**입니다. 우리가 처음부터 만든 모델이 아닙니다. 아래 다섯 모델은 모두 같은 공개 모델에서 출발합니다.
 
-2026-09-21의 고정 MedQA test 100문항과 기존 학습 10문항·20단계 모델을 평가했습니다.
+| 보고서의 이름 | 우리가 추가로 학습시킨 데이터 |
+|---|---|
+| 공개 모델 그대로 (`untrained`) | 없음. 이 프로젝트에서 추가 학습하기 전의 기준 모델 |
+| 원문으로 학습 (`clean`) | 의료 문제 10개를 각각 두 번: 총 20개 입력 |
+| 고정 취미 문장으로 학습 (`random`) | 원문 10개 + 같은 문제에 Porsche·LoL·mango 중 한 문장을 붙인 10개 |
+| 매번 새로 만든 문장으로 학습 (`independent`) | 원문 10개 + 이전 답을 보지 않고 생성한 문장을 붙인 10개 |
+| 이전 답을 보고 고친 문장으로 학습 (`adaptive`) | 원문 10개 + 이전 시도의 답과 정오를 보고 생성한 문장을 붙인 10개 |
 
-| 모델 | 원문 100문항 정확도 | 같은 교란 입력 1,090건 정확도 |
+네 추가 학습 모델에는 **문장을 붙이기 전 문제의 정답**을 가르칩니다. 모델이 냈던 오답을 정답으로 학습시키지 않습니다. 각 모델을 별도로 학습하며, 앞 모델을 학습한 뒤 다음 모델로 이어가는 방식이 아닙니다.
+
+문장을 만드는 데도 같은 Qwen 공개 모델을 사용했습니다. `independent`와 `adaptive`는 **문장 생성 방법의 차이**입니다. 이름이 다른 두 사전학습 모델을 뜻하지 않습니다.
+
+## 지금 실행할 것
+
+- **GPU 네 장에서 직접 학습:** [pane별 명령과 설정](docs/TRAINING_KO.md)
+- **처음 설치하거나 다른 서버에서 실행:** [재현 안내](docs/REPRODUCING_KO.md)
+- **Claude에게 맡기기:** [CLAUDE.md](CLAUDE.md)
+- **문제·데이터·피드백 이해:** [실험 설명](docs/EXPERIMENT_GUIDE_KO.md)
+
+새 학습 명령은 GPU 메모리 사용을 늘린 BF16 LoRA 설정입니다. 시작할 때 적절한 배치를 자동으로 고릅니다. 기존 결과의 4비트 학습과 설정이 다르므로 새 결과로 기록합니다.
+
+## 이미 측정한 결과
+
+아래는 **기존 4비트 학습 결과**입니다. 새 BF16 학습 결과는 아직 없습니다. 학습에 쓰지 않은 의료 문제 100개와, 그 문제에 문장을 붙인 입력 1,090개로 평가했습니다.
+
+| 모델에 추가한 학습 데이터 | 원문 정답 / 100 | 문장을 붙인 입력 정답 / 1,090 |
 |---|---:|---:|
-| 추가 학습 전 | 66% | 65.7% |
-| 원문만 학습 | 64% | 61.9% |
-| 고정 배경 문장 학습 | 66% | 63.3% |
-| 독립형 교란 학습 | 65% | 61.9% |
-| 적응형 교란 학습 | 65% | 62.1% |
+| 추가 학습 없음 | 66 | 716 |
+| 원문 | 64 | 675 |
+| 원문 + 고정 취미 문장 | 66 | 690 |
+| 원문 + 매번 새로 만든 문장 | 65 | 675 |
+| 원문 + 이전 답을 보고 고친 문장 | 65 | 677 |
 
-독립형과 적응형은 원래 맞힌 66문항 중 **같은 한 문항**에서만 잠정 오답 전환을 찾았습니다. 이번 작은 학습에서는 개선이 관측되지 않았습니다. 교란은 임상 미검토 상태이며, 이 결과는 의료 안전성이나 적응형 방법의 우월성을 입증하지 않습니다.
+**이 작은 학습에서는 개선이 없었습니다.** 생성한 문장의 의학적 무관성은 아직 검토되지 않았고, test 문제 8개에는 입력에 없는 그림이 언급됩니다.
 
-[전체 결과](docs/TEST_RESULTS_KO.md) · [실제 예시 6가지](docs/TEST_EXAMPLES_KO.md) · [누락 이미지 등 입력 점검](docs/TEST_DATA_NOTES_KO.md) · [개발 단계 기록](docs/SMOKE_RESULTS_KO.md)
+[결과 설명](docs/TEST_RESULTS_KO.md) · [실제 예시 6개](docs/TEST_EXAMPLES_KO.md) · [입력 자료 점검](docs/TEST_DATA_NOTES_KO.md)
 
-## 먼저 기록부터 확인하기 — GPU 불필요
+## 공개 기록 확인
 
 ```bash
-git clone https://github.com/Gnaroshi/GAIM.git
-cd GAIM
 python3 scripts/verify_reference.py
 ```
 
-Python 3.10 이상에서 표준 라이브러리만 사용합니다. 저장된 입력과 답을 읽어 파일 무결성, 학습 입력 재구성, 실제 응답 재채점, 학습 전후 집계를 검증합니다. **모델을 새로 실행한 결과는 아닙니다.**
+GPU 없이 저장된 답변을 다시 채점하고 파일을 확인합니다. 새로운 모델 실행은 아닙니다.
 
-## GPU 실험 준비
-
-검증한 설치 환경은 **Ubuntu 22.04 x86_64 / Python 3.10 / RTX 3090 24GB 네 장 / CUDA 12.4 호환 드라이버**입니다. 약 25GB 이상의 여유 공간과 다운로드 연결을 준비하세요. macOS·Windows·다른 Ubuntu/Python 조합의 GPU 설치는 자동 지원하지 않습니다. CPU 기록 검증은 별도입니다.
-
-사용 권한이 있는 네 GPU를 명시합니다. 아래 0–3은 예시이며, 원래 실험은 4–7을 사용했습니다.
-
-```bash
-export GAIM_CUDA_DEVICES=0,1,2,3
-bash scripts/setup.sh --check
-bash scripts/setup.sh
-```
-
-`GAIM_CUDA_DEVICES` → 기존 `CUDA_VISIBLE_DEVICES` → 원래 기본값 `4,5,6,7` 순으로 선택합니다. 네 개의 중복 없는 숫자 ID만 지원합니다. 현재는 GPU 한두 장에서 순차 실행하는 모드를 구현하지 않았습니다. `cuda:0..3`은 선택한 네 장을 그 순서대로 다시 번호 붙인 것입니다. 다른 사람의 프로세스를 중단하지 마세요.
-
-설치는 프로젝트의 `.venv`, `.cache`, `.deps`, `data`만 사용합니다. 원래 전체 의존성 버전을 제약으로 적용하고, 데이터·모델을 고정 revision에서 내려받아 검사합니다.
-
-## 두 가지 재현 경로
-
-### 교란 생성부터 전부 다시 실행
-
-```bash
-.venv/bin/python -u -m gaim.run \
-  --config configs/train_generation.json --run-dir runs/reproduce_train --limit 12
-.venv/bin/python -u -m gaim.training \
-  --source-run runs/reproduce_train --output-dir runs/reproduce_adapters \
-  --steps 20 --allow-provisional
-bash scripts/run_evaluation.sh --run-dir runs/reproduce_test
-.venv/bin/python -u -m gaim.replay \
-  --source-run runs/reproduce_test --training-dir runs/reproduce_adapters \
-  --output-dir runs/reproduce_test_replay --allow-provisional
-```
-
-원래 설정을 다시 실행하지만, GPU 계산·라이브러리 차이에 따라 생성 문구와 학습 데이터가 달라질 수 있습니다. `--limit 12`와 `--steps 20`을 생략하면 다른 실험이 됩니다. 새 실행 이름을 쓰고 결과 차이를 그대로 보고하세요.
-
-### 원래 생성했던 정확한 입력으로 학습·평가
-
-```bash
-.venv/bin/python -u -m gaim.training \
-  --source-run repro/reference/train --output-dir runs/fixed_input_adapters \
-  --steps 20 --allow-provisional
-.venv/bin/python -u -m gaim.replay \
-  --source-run repro/reference/test --training-dir runs/fixed_input_adapters \
-  --output-dir runs/fixed_input_test_replay --allow-provisional
-```
-
-이 경로는 저장된 생성 기록을 재사용합니다. 원래의 공통 학습 10문항·조건별 20행과 test 입력을 재구성하며, 생성 모델을 다시 실행하지 않습니다. 기반 모델 점수는 보존된 원래 응답에서 집계하고, 새로 학습한 네 모델만 다시 추론합니다. 학습 가중치가 비트까지 같아지는 것은 보장하지 않습니다.
-
-`--allow-provisional`은 미검토 교란을 포함한 탐색 실험임을 명시합니다. 자동 검사 통과와 임상적 정답 보존 승인은 다릅니다. 이미지가 빠진 test 문항 8개를 포함하며, 사후에 유리한 문항만 골라 결과를 만들지 않습니다.
-
-## 보존된 것과 다시 만드는 것
-
-| 포함 | 위치 |
-|---|---|
-| 실행 코드·고정 설정·소프트웨어 테스트 | `gaim/`, `configs/`, `tests/` |
-| 생성 입력·실제 응답·검토 상태·기준 결과 | `repro/reference/` |
-| 원래 모델 revision·환경·문항 ID·해시 | `docs/results/reference/` |
-| 한국어 실험 설명과 예시 | `docs/` |
-
-모델 가중치, adapter 가중치, 가상환경, 캐시, 개인 경로와 프로세스 로그는 Git에 넣지 않았습니다. 새 clone에는 학습된 adapter가 없으므로 학습을 끝낸 뒤 replay를 실행해야 합니다. 공개한 데이터와 모델의 출처·라이선스는 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)에 있습니다.
-
-`reference-20260921` 태그는 원래 실행 소스를 보존합니다. `main`은 [운영 변경 기록](docs/PORTABILITY.md)에 설명한 GPU 선택·설치·검증 개선을 포함합니다. 기록의 원래 코드 해시를 현재 코드 해시라고 바꾸지 않습니다.
-
-## 결과와 문제 해결
-
-실행 폴더의 `COMPLETE`, `report.md`, `summary.json`, `run.json` 또는 `training.json`을 확인하세요. 실패·부분 완료 기록은 보존하고, [재현 안내서](docs/REPRODUCING_KO.md)의 중단·재개 절차를 따르세요. 기록을 수정하거나 재시도 중 가장 좋은 결과만 고르면 재현이 아닙니다.
-
-```bash
-.venv/bin/python -m pytest -q
-```
-
-소프트웨어 검사는 가상 fixture와 공개 기록 무결성 검사를 포함하며, 그 통과 수를 의료 연구 관측값으로 세지 않습니다. 자세한 방법은 [실험 이해 가이드](docs/EXPERIMENT_GUIDE_KO.md), 코드 대응은 그 문서의 파일 안내를 참고하세요.
+원래 입력·응답은 `repro/reference/`, 버전과 환경 기록은 `docs/results/reference/`에 있습니다. 모델·학습 가중치는 저장소에 넣지 않았습니다. 원래 실행 코드는 `reference-20260921` 태그에 보존했습니다. [출처와 라이선스](THIRD_PARTY_NOTICES.md) · [코드 변경 이력](docs/PORTABILITY.md)

@@ -1,19 +1,21 @@
-# Operational changes after the original experiment
+# 코드와 실행 설정 변경
 
-The annotated tag `reference-20260921` preserves the execution source associated with the completed 2026-09-21 records. `main` adds the changes below so another researcher can use the public project. The historical run manifests keep their original code hashes; those hashes do not describe the later main branch.
+## 원래 실험
 
-## Changes
+`reference-20260921` 태그는 실제 시험에 사용했던 코드를 보존합니다. 원래 입력·응답은 `repro/reference/`에 있으며 수정하지 않습니다.
 
-- GPU selection is shared across launchers, workers and preflight: explicit `GAIM_CUDA_DEVICES`, then existing `CUDA_VISIBLE_DEVICES`, then original default `4,5,6,7`. Four unique numeric physical IDs are required; order is preserved. Examples using another server's 0–3 are not authorization to use those devices on the original server.
-- GPU-use checks and child processes follow the selected mapping. Saved evaluation/training/replay manifests are checked before continuation. A changed mapping fails before model loading. Replay now records its mapping; use a fresh replay directory when moving from the historical schema.
-- Setup checks Ubuntu 22.04 x86_64, Python 3.10, required tools and selected GPU availability before installation. `--check` performs only these checks. Dependencies remain project-local; original observed package versions constrain resolution. The bootstrap script and optional Ubuntu Python-header package are checked against observed SHA-256 values before execution/extraction.
-- `scripts/verify_reference.py` verifies public-record hashes, reconstructs original training rows, rescores actual answers and checks same-input replay summaries using the standard library. It performs no model inference, network calls or record writes.
-- `CLAUDE.md` and `REPRODUCING_KO.md` distinguish CPU verification, fixed-input retraining, and complete regeneration. Historical source records and result reports remain immutable.
+원래 학습은 4비트 QLoRA, 한 번에 입력1개, 입력2개마다 갱신, 총20회 갱신입니다. 같은 의료 문제10개로 모델별 입력20개를 만들었습니다. 기존 결과표는 이 설정의 관측값입니다.
 
-The model/dataset revisions, question selection, prompts, feedback, sampling, seed derivation, candidate validation, training selection, QLoRA settings and answer scoring were not changed by this publication work. A new launch records current code hashes rather than pretending to use the historical code.
+## 공개 저장소 준비 때 바꾼 것
 
-The original execution selected GPUs 4–7. New manifests from another GPU allocation are expected to differ in operational metadata. Fixed seed and same inputs do not guarantee bitwise-identical training across environments. Report differences instead of editing source observations or tuning to match them.
+다른 서버의 GPU 번호 선택, 설치 환경 확인, GPU 없는 기록 검증을 추가했습니다. 문제·생성 방법·정답 채점과 기존 학습 설정은 유지했습니다. 당시 검사는 [공개 준비 검증 기록](PUBLICATION_VALIDATION.md)에 있습니다.
 
-## Validation boundary
+## 사용자가 tmux에서 직접 시작하는 새 학습
 
-Validation of the publication changes is recorded in `PUBLICATION_VALIDATION.md`. GPU preflight is a small NF4 forward/backward check, not a repeat of the medical experiment. The reference scores come from the completed historical runs; portability validation does not create new clinical or robustness results.
+`gaim.train_arm`과 `scripts/train_pane.sh`를 추가했습니다. 네 pane이 GPU 한 장씩 맡습니다. 기존 `gaim.training` 명령은 그대로 사용할 수 있습니다.
+
+새 학습은 BF16 LoRA입니다. 4비트 압축과 중간 계산 재계산을 끄고, 시작할 때 실제 입력으로 GPU 메모리 안에 들어가는 큰 배치를 선택합니다. 한 번 갱신할 때는 항상 입력20개를 사용하며 총20회 갱신합니다. 모델별 총 처리량은 기존40개에서400개로 바뀝니다. 정답 감독은 답변 토큰 수에 따라 평균하므로 작은 배치로 나눠도 같은 기준을 유지합니다.
+
+**이것은 원래 결과를 그대로 재현하는 설정이 아닙니다.** 같은 학습 데이터와 출발 모델을 사용하되 정밀도·처리량·계산 방식을 바꾼 새 실행입니다. 새 성능 결과는 실제 학습과 평가가 끝난 뒤에만 보고합니다.
+
+문서와 평가표도 모델별 추가 학습 데이터가 먼저 보이도록 줄여 썼습니다. 기존 수치와 결과 JSON은 유지했습니다. 과거 문서 파일의 해시는 당시 공개본을 뜻하며, 현재 문구의 해시로 바꾸지 않습니다.

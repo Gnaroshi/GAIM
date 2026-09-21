@@ -214,7 +214,6 @@ class ReplayProtocolTests(ReplayFixture):
             self.assertEqual([call[2] for call in variant_calls], [call[2] for call in calls[:2]])
         result = json.loads((self.output / "summary.json").read_text())
         self.assertEqual(result["untrained"], replay.summarize(expected))
-        self.assertIn("고정 입력", output)
         self.assertTrue((self.output / "COMPLETE").exists())
 
     def test_pending_review_requires_explicit_provisional_mode(self):

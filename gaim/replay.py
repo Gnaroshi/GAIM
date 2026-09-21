@@ -19,6 +19,13 @@ from .metrics import review_content_hash
 from .environment import configure, gpu_mask, require_gpu_mapping, child_environment
 
 VARIANTS = ("clean", "random", "independent", "adaptive")
+DISPLAY_NAMES = {
+    "untrained": "추가 학습하지 않은 Qwen 공개 모델",
+    "clean": "원문으로 추가 학습",
+    "random": "원문 + 고정 취미 문장으로 추가 학습",
+    "independent": "원문 + 이전 답 없이 만든 문장으로 추가 학습",
+    "adaptive": "원문 + 이전 답을 보고 만든 문장으로 추가 학습",
+}
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -247,14 +254,18 @@ def main():
                 raise ValueError(f"Incomplete evaluation for {variant}")
             results[variant] = summarize(records)
         (args.output_dir / "summary.json").write_text(json.dumps(results, indent=2))
-        lines = ["# 추가 학습 후 고정 입력 평가", "", "같은 held-out 문제와 같은 교란을 모든 모델에 다시 입력한 결과입니다.",
-                 "새로 학습한 모델에 재공격한 결과가 아니므로 적응형 공격 전반에 대한 방어 성능으로 해석하지 않습니다.", "",
-                 f"미검토 교란 포함: {args.allow_provisional}. 포함한 경우 수치는 실행 검증용 잠정 결과입니다.", "",
-                 "| 모델 | 원문 정답/문항 | 교란 정답/시도 | 모든 교란에 정답인 문항 | 형식 오류 |",
+        lines = ["# 같은 시험 입력으로 추가 학습 결과 비교", "",
+                 "모든 모델은 Qwen 팀이 이미 학습해 공개한 같은 모델에서 출발합니다. 추가 학습 데이터만 다릅니다.",
+                 f"공개 모델: {source_manifest['target_model']}. 추가 학습 문제: 모델마다 {len(training_questions)}개.",
+                 "공개 모델 그대로의 점수는 저장된 답변에서 가져왔고, 네 추가 학습 모델은 같은 시험 입력에 새로 답했습니다.",
+                 "‘이전 답 없이’와 ‘이전 답을 보고’는 같은 공개 모델로 추가 문장을 만드는 두 방법입니다.",
+                 "시험 문제에 붙인 문장은 이미 저장된 것을 사용했습니다. 학습 모델에 맞춰 새 문장을 만든 것은 아닙니다.", "",
+                 f"의학적으로 무관한지 아직 검토하지 않은 문장 포함: {args.allow_provisional}.", "",
+                 "| 모델의 추가 학습 데이터 | 원문 정답/문항 | 문장을 붙인 입력 정답/시도 | 모든 추가 문장에 정답인 문제 | 형식 오류 |",
                  "|---|---:|---:|---:|---:|"]
         for name, result in results.items():
-            lines.append(f"| {name} | {result['clean_correct']}/{result['clean_questions']} | {result['perturbed_correct']}/{result['perturbed_cases']} | {result['all_perturbations_correct_questions']}/{result['questions_with_perturbations']} | {result['format_errors']} |")
-        lines.extend(["", "교란별 시도를 독립적인 임상 문항처럼 세면 안 됩니다. 표의 시도 단위 정확도는 기술 통계이며, 본 실험은 문항 수와 seed를 늘려 재검증해야 합니다."])
+            lines.append(f"| {DISPLAY_NAMES[name]} | {result['clean_correct']}/{result['clean_questions']} | {result['perturbed_correct']}/{result['perturbed_cases']} | {result['all_perturbations_correct_questions']}/{result['questions_with_perturbations']} | {result['format_errors']} |")
+        lines.extend(["", "같은 문제에 여러 문장을 넣었으므로 시도 수는 서로 다른 문제 수가 아닙니다. 모든 모델의 학습 정답은 원본 의료 문제의 정답입니다."])
         (args.output_dir / "report.md").write_text("\n".join(lines) + "\n")
         (args.output_dir / "COMPLETE").write_text("complete\n")
         print("\n".join(lines))

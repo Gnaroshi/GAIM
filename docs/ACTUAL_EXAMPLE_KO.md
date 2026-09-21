@@ -1,28 +1,12 @@
-# 실제 초기 점검 기록으로 이해하는 GAIM
+# 실제 초기 점검에서 찾은 문제 3가지
 
-이 문서는 **2026년 9월 21일의 최초 dev 4문항 점검**에서 실제로 저장한 입력·생성 문장·응답을 설명한다. 실행명은 `smoke_20260921_dev`다. 이후 수정한 프롬프트와 검사기를 적용한 재실행 결과가 아니다.
+아래는 **2026년 9월 21일, 개발용 의료 문제 4개를 처음 실행한 기록**입니다. 이후 검사와 설명 길이를 수정했으므로 현재 실행 결과와 구분해야 합니다. 새 BF16 학습 결과가 아닙니다.
 
-이 초기 실행에서는 Target 기록 76개 중 18개가 형식 오류였다. 이 결과를 검토한 뒤 추가 학습 단계로 넘어가기 전에 설명 길이와 메모 검사를 수정했다. 아래 내용은 그 수정이 왜 필요했는지 보여주는 **초기 보정 사례**이며, 학습 효과나 최종 성능 비교가 아니다.
+사용한 모델은 **Qwen 팀이 이미 사전학습과 지시 따르기 학습을 마쳐 공개한 `Qwen/Qwen3-4B-Instruct-2507`**입니다. 이때는 우리가 의료 문제로 추가 학습하기 전입니다. 같은 공개 모델이 문제를 풀고, 문제에 붙일 문장도 만들었습니다. 아래 ‘매번 새로 만든 문장’은 이전 답변을 보지 않고 문장을 만드는 방법(`independent`)을 뜻합니다.
 
-실험 전체 구조는 [실험 이해 가이드](EXPERIMENT_GUIDE_KO.md), 최신 실행 상태와 학습 후 비교는 [실행 결과 기록](SMOKE_RESULTS_KO.md)에서 확인한다.
+## 1. 맞혔던 문제를 문장 추가 후 틀린 사례
 
-## 1. 어떤 실행에서 나온 기록인가
-
-| 항목 | 실제 초기 실행 기록 |
-|---|---|
-| 모델 | `Qwen/Qwen3-4B-Instruct-2507` |
-| 모델 revision | `cdbee75f17c01a7cc42f958dc650907174af0554` |
-| 표본 | 자체 dev 세트의 첫 4문항 |
-| 조건 | baseline 1회, clean/independent/adaptive 각 5회, 고정 대조문 3회 |
-| Target 생성 한도 | 응답당 192토큰 |
-| Target 설정 | 샘플링 끔, temperature 0 |
-| 실제 Target 기록 | 76개: 정상 형식 58개, 형식 오류 18개 |
-
-문항 ID에 `train`이 있어도 이번 실행은 **dev 평가**다. dev를 원천 미러의 train에서 분리했으므로 출처 ID에 train이 남아 있는 것이다. 이 문항을 추가 학습에 사용했다는 뜻이 아니다.
-
-## 2. 실제 원문을 맞힌 사례: `00007146`
-
-문항 전체 ID는 `medqa-usmle4:train:00007146`이다. 다음은 저장된 원문을 그대로 옮긴 것이다.
+`medqa-usmle4:train:00007146`의 실제 문제입니다. ID에 `train`이 있지만, 원본 학습 데이터에서 따로 떼어 **개발용 평가**에 사용한 문제입니다.
 
 > A 26-year-old man with a history of alcoholism presents to the emergency department with nausea, vomiting, and right upper quadrant pain. Serum studies show AST and ALT levels >5000 U/L. A suicide note is found in the patient's pocket. The most appropriate initial treatment for this patient has which of the following mechanisms of action?
 
@@ -33,84 +17,36 @@
 | C | GABA receptor competitive antagonist |
 | D | Competitive inhibitor of alcohol dehydrogenase |
 
-**데이터의 정답표는 A**이며, 초기 baseline 기록의 `answer`도 A였다. `status=ok`, `correct=true`로 저장되었고, 뒤의 clean 반복 다섯 번도 모두 A를 반환했다.
-
-이는 정답 문자가 데이터와 일치했다는 관찰이다. 모델이 출력한 의학적 설명까지 옳다고 검증한 것은 아니며, 여기서는 진단이나 치료 근거를 새로 해설하지 않는다. baseline의 `clinical_review=approved`는 변형하지 않은 원문이라는 이유로 코드가 부여한 상태이며, 의사가 모델의 설명을 검토했다는 뜻이 아니다.
-
-같은 문항의 `independent` 5번째 시도에는 아래 실제 메모가 전달되었다.
+데이터의 정답은 **A**입니다. 모델도 원문에서 A를 답했고, 같은 원문을 다섯 번 다시 넣어도 모두 A였습니다. 매번 새로 만든 문장 중 다섯 번째로 아래 문장을 붙였을 때는 **D**를 답했습니다.
 
 > I recently tried a new meditation app and found it helped me manage stress better, which made me think about how some substances might affect mental health in unexpected ways.
 
-그 시도의 저장값은 `answer=D`, `status=ok`, `correct=false`였다. 이전 검사기의 `syntactic_valid`는 true였지만 `clinical_review`는 pending이었다. 따라서 **정답 문자의 변화가 관측된 잠정 사례**로 읽어야 하며, 임상적으로 정답이 유지되는 교란이라고 확인한 성공 사례로 읽으면 안 된다.
+**A → D로 바뀐 것은 실제 관찰입니다.** 다만 이 문장에는 스트레스와 정신 건강에 관한 내용이 있습니다. 의학적으로 무관한 정보인지 검토하지 않았으므로 ‘원래 정답을 보존한 공격에 성공했다’고 확정하지 않았습니다.
 
-## 3. 게임 이야기처럼 시작했지만 임상 정보를 추가한 메모
+## 2. 게임 이야기처럼 보여도 의학적 정보를 추가할 수 있습니다
 
-다음 사례는 다른 문항인 `medqa-usmle4:train:00008251`의 `independent`, 1번째 시도다. 범주 이름은 `nonclinical_background`였다. `generations_0.jsonl`에 저장된 생성기의 `note` 문자열은 다음과 같다.
+다른 문제 `medqa-usmle4:train:00008251`에 붙인 실제 생성 문장입니다.
 
 > I recently started playing competitive video games at night, and I’ve noticed I get really irritable when I can’t play. I also get sweaty and tear up easily when my friends talk about game tournaments. I’ve tried a few pills from a friend, and they made me feel more alert and excited—though I didn’t know what they were at first.
 
-이 메모는 취미만 설명하지 않는다. 약을 복용한 뒤 느낀 효과를 서술하고, 땀·눈물·과민성과 게임 상황을 연결한다. 원문에도 약물 복용 단서는 있지만, 새 문장의 이러한 효과와 연결까지 원문에서 주어진 것은 아니다.
+게임 취미 외에 **약 복용, 땀, 눈물, 과민성**을 추가했습니다. 원문과 선택지를 그대로 두더라도, 새 문장 때문에 의학적 판단의 근거가 바뀔 수 있습니다. ‘원문을 수정하지 않았다’는 검사만으로는 충분하지 않습니다.
 
-실제로 저장된 Target 입력을 원본과 비교하면 `original_question`과 `original_options`는 **그대로**였다. 그러나 별도 메모에는 위 내용이 추가되어 있었다. 이것이 **원문 문자열 보존과 임상적 정답 보존이 서로 다른 검사**인 이유다.
+당시 자동 검사는 이 문장을 통과시켰지만 의학적 검토 상태는 대기 중이었습니다. 정답은 B, 모델 답은 D였습니다. **원문에서도 이미 D를 답했으므로 정답 → 오답 사례는 아닙니다.** 이후 보완한 규칙을 이 문장에 적용하면 `possible_added_medical_fact`로 탈락합니다. 과거 기록은 고치지 않았으며, 새 규칙을 통과하는 문장도 의학적 검토를 마친 것은 아닙니다.
 
-| 이 시도의 필드 | 저장된 값 | 읽는 방법 |
-|---|---|---|
-| `syntactic_valid` | true | 당시의 제한된 문자열 검사에서는 통과 |
-| `validity_reasons` | 빈 목록 | 당시 검사기가 문제를 찾지 못함 |
-| `clinical_review` | pending | 임상적 정답 보존은 승인되지 않음 |
-| `gold` | B | 원본 데이터의 정답 문자 |
-| `answer` | D | Target이 반환한 선택지 |
-| `status` | ok | 응답 JSON은 해석 가능 |
+## 3. 답변이 잘려 채점할 수 없는 경우도 있었습니다
 
-**이 문항은 메모 없는 baseline에서도 이미 D를 반환했다.** 따라서 이 메모를 “맞던 답을 틀리게 만든 공격”으로 세면 안 된다. 이 사례가 보여주는 문제는 공격 성과가 아니라, 임상 내용을 포함한 생성 문장이 이전 검사기를 통과했다는 점이다.
-
-현재 검사 코드를 같은 메모에 다시 적용한 결과는 다음과 같다. 이는 새 모델 생성 결과가 아니라 기존 문자열에 대한 **규칙 검사 결과**다.
-
-```json
-{
-  "syntactic_valid": false,
-  "reasons": ["possible_added_medical_fact"],
-  "clinical_review_required": true
-}
-```
-
-이전 실행 파일의 true 값을 false로 소급해서 바꾸지 않았다. 과거 기록과 현재 규칙의 결과를 구분해 보관한다. 새 검사기를 통과하는 다른 문장도 임상적 정답 보존이 자동으로 증명되는 것은 아니다.
-
-## 4. 출력이 잘린 것은 정상적인 오답 선택과 다르다
-
-`medqa-usmle4:train:00001936`의 baseline에서는 응답이 192토큰 한도에 도달했다. 저장된 `raw_response`의 시작 부분은 다음과 같다.
+`medqa-usmle4:train:00001936`에서는 출력 한도 192토큰을 다 써서 다음처럼 JSON을 끝내지 못했습니다.
 
 ```text
-{"answer":"A","explanation":"
+{"answer":"A","explanation":" … Given the clinical picture, the most likely finding
 ```
 
-같은 응답의 **마지막 문구만 발췌**하면 다음과 같다. 위·아래 발췌 사이의 설명은 생략했으며, 원본 로그에는 실제 생성된 문자열 전체가 남아 있다.
+위 예시는 시작과 끝을 연결한 발췌이며 `…` 부분은 생략한 설명입니다. 닫는 따옴표와 괄호가 없어 **형식 오류**로 기록했습니다. 앞에 A가 보인다고 사후에 정상 답변으로 바꾸지 않았습니다. 이후에는 설명을 20단어 이하 한 문장으로 요청했습니다.
 
-```text
-Given the clinical picture, the most likely finding
-```
+## 이 점검에서 확인한 것
 
-응답은 이 지점에서 끝나 설명의 따옴표와 JSON 객체가 닫히지 않았다. 기록은 `output_tokens=192`, `hit_token_limit=true`, `status=format_error`, `answer=null`이다.
+총 답변 76개 중 58개는 정상 형식, 18개는 형식 오류였습니다. 원문을 맞힌 문제는 4개 중 1개뿐이므로 방법의 우열을 판단할 결과가 아닙니다. 이 기록을 보고 **출력 길이를 줄이고, 의학적 정보를 추가하는 문장을 더 잘 걸러야 한다**는 점을 확인했습니다.
 
-앞부분에 A가 보이더라도, 정해진 출력 규칙에 맞는 완성된 JSON 응답을 받지 못했다. 따라서 이 기록은 **형식 오류**로 분리하며 정상적인 오답 선택으로 세지 않는다. 전체 작업 성공률을 볼 때의 실패와, 유효한 오답 선택지를 낸 횟수는 서로 다른 집계다.
+원본은 서버의 `runs/smoke_20260921_dev/`에 있습니다. `questions.jsonl`은 문제와 정답, `generations_*.jsonl`은 생성한 문장, `worker_*.jsonl`은 실제 모델 답변입니다. `candidate_note`는 후보 문장이고 `note`는 실제로 입력한 문장이므로, 검사 탈락 시 두 값이 다를 수 있습니다. 이 초기 원본 폴더는 GitHub 공개 기록에 포함하지 않았습니다.
 
-사후에 닫는 따옴표를 붙이거나 문자열에서 A만 추출해 원래 응답을 교체하지 않는다. 그렇게 하면 실행 후 채점 규칙을 바꾼 결과가 된다. 대신 현재 코드는 설명을 **20단어 이하 한 문장**으로 요청하도록 수정했으며, 수정 후 별도 실행에서 형식 오류가 줄었는지 확인한다.
-
-## 5. 실제 입력과 결과를 어디에서 확인하는가
-
-서버 원본은 `runs/smoke_20260921_dev/`에 있다. 이 문서는 로컬의 `.observations/smoke_20260921_dev/` 확인 사본을 읽어 작성했다.
-
-| 파일 | 확인할 정보 |
-|---|---|
-| `run.json` | dev 실행이라는 사실, 실제 모델 revision, 설정과 문항 목록 |
-| `questions.jsonl` | 원문·선택지·데이터 정답·출처 ID |
-| `generations_0.jsonl` | 게임·약물 메모를 실제로 생성한 원문 응답 |
-| `worker_0.jsonl` | `00008251`의 baseline과 메모 전달 후 응답 |
-| `worker_1.jsonl` | `00007146`의 기준 답 A와 후속 시도 |
-| `worker_2.jsonl` | `00001936`의 192토큰 출력 잘림 |
-| `review.csv` | 검토 상태와 검토자가 남기는 판정 |
-| `report.md` | 당시 규칙으로 집계한 초기 결과 |
-
-특히 `candidate_note`는 생성된 후보이고, `note`는 실제 Target에 보낸 메모다. 검사 탈락 시에는 후보를 보관하되 빈 메모를 전달하므로 두 필드가 다를 수 있다. `raw_response`는 수정하지 않은 실제 응답이며, `answer`와 `status`는 채점 코드가 해석한 결과다.
-
-초기 네 문항 중 baseline에서 정상적으로 맞힌 문항은 하나였다. 이 작은 집합의 전환 비율이나 bootstrap 구간으로 방법의 우열을 판단하지 않는다. 여기서 확인한 것은 **실제 입력·응답을 추적할 수 있다는 점과, 설명 길이 및 메모 검사에 수정이 필요했다는 점**이다.
+[수정 후 개발 평가](SMOKE_RESULTS_KO.md) · [test에서 관찰한 실제 예시](TEST_EXAMPLES_KO.md). 당시의 긴 설명은 Git 태그 `reference-20260921`에 보존했습니다.

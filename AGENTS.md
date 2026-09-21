@@ -18,3 +18,7 @@ Read README.md and the relevant experiment/result documents before changes. Clau
 - Keep published reference records immutable. Write new outputs under a new runs/ directory. Never tune on the observed test sample to force reference scores.
 - Only publish intentionally selected code, documentation and attributed research records. Do not add credentials, personal paths, environments, model weights, caches, or unrelated attachments.
 - Keep source/code-hash provenance and empirical observations distinct from later operational changes. A fixed seed is not a promise of bitwise-identical CUDA output.
+- When the user asks for tmux commands, prepare code/data and return one command per pane. Do not start training, GPU batch probes, polling, or long waits unless asked. Use gaim.train_arm for independent one-GPU panes; keep historical gaim.training behavior separate.
+- Define each model by its public starting checkpoint and the data we additionally train it on. “Untrained” means no project-specific added training, never no prior training. Use clear data descriptions instead of unexplained clean/random/independent/adaptive labels.
+- Keep checks proportional to the change. Preserve source gold, train/test separation, valid gradients and existing outputs; do not add duplicate gates or repeat completed checks without a concrete reason.
+- Readability edits to historical Markdown are authorized; preserve observations and raw result JSON, with earlier wording in Git history.
