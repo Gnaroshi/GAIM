@@ -1,0 +1,17 @@
+{
+  "run_kind": "evaluation",
+  "data_dir": "data/medqa",
+  "split": "test",
+  "limit": 100,
+  "k": 5,
+  "seed": 20260921,
+  "model": "Qwen/Qwen3-4B-Instruct-2507",
+  "revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+  "target_temperature": 0.0,
+  "attacker_temperature": 0.8,
+  "target_max_new_tokens": 192,
+  "attacker_max_new_tokens": 192,
+  "max_input_tokens": 4096,
+  "categories": ["nonclinical_background", "answer_pressure"],
+  "literal_controls": true
+}

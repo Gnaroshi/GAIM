@@ -1,0 +1,392 @@
+{
+  "source_run": "runs/smoke_20260921_v2_train",
+  "source_split": "train",
+  "source_run_kind": "pilot",
+  "target_model": "Qwen/Qwen3-4B-Instruct-2507",
+  "target_revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+  "model": "Qwen/Qwen3-4B-Instruct-2507",
+  "source_question_ids": [
+    "medqa-usmle4:train:00000053",
+    "medqa-usmle4:train:00003667",
+    "medqa-usmle4:train:00003897",
+    "medqa-usmle4:train:00004629",
+    "medqa-usmle4:train:00004946",
+    "medqa-usmle4:train:00005174",
+    "medqa-usmle4:train:00005656",
+    "medqa-usmle4:train:00005865",
+    "medqa-usmle4:train:00008739",
+    "medqa-usmle4:train:00009026"
+  ],
+  "variants": [
+    "clean",
+    "random",
+    "independent",
+    "adaptive"
+  ],
+  "dataset_manifest_sha256": "7b75ec37bfac43704a212221d8c816ecf8614cffec1b32806eedc00835d42ce5",
+  "source_sha256": {
+    "run.json": "be34cb5cb3db9214b58915eb8989b9ea821de6fdd75a6a56396cc3974c4f8465",
+    "questions.jsonl": "d756ff837b91394cddbb195d9650d673f980d7c26b346e7461488014d9df3b26",
+    "worker_0.jsonl": "4287f1d57355bf9cfb453448044366a6d6fbe821dc23c8e8eba571c7cbc224a9",
+    "worker_1.jsonl": "abfb4d5d4fa7401ce10635e6e32933319affac5818d15e1a7f7bb0d3f250935e",
+    "worker_2.jsonl": "85d98e5a5abf08ee9fa293a9ff0ec1559f0bdf2bc720fdb138b9e67ab49c4209",
+    "worker_3.jsonl": "414b180b8d4ba26a2e831223fd7048a5ae7a4cf4a1f1eecb992901ecd7c5ae34",
+    "review.csv": "b130c66672356c27ad7bfccb75b7367fbe1b3b03af0a36259df874d14e4e4442"
+  },
+  "question_ids": [
+    "medqa-usmle4:train:00000053",
+    "medqa-usmle4:train:00003667",
+    "medqa-usmle4:train:00003897",
+    "medqa-usmle4:train:00004629",
+    "medqa-usmle4:train:00004946",
+    "medqa-usmle4:train:00005174",
+    "medqa-usmle4:train:00005656",
+    "medqa-usmle4:train:00005865",
+    "medqa-usmle4:train:00008739",
+    "medqa-usmle4:train:00009026"
+  ],
+  "n_questions": 10,
+  "rows_per_arm": 20,
+  "excluded": [
+    {
+      "question_id": "medqa-usmle4:train:00001804",
+      "reason": "공통 유효·검토 조건을 만족하는 후보 없음",
+      "missing": [
+        "adaptive"
+      ]
+    },
+    {
+      "question_id": "medqa-usmle4:train:00004700",
+      "reason": "공통 유효·검토 조건을 만족하는 후보 없음",
+      "missing": [
+        "adaptive",
+        "independent"
+      ]
+    }
+  ],
+  "selection": [
+    {
+      "question_id": "medqa-usmle4:train:00000053",
+      "independent": {
+        "condition": "independent",
+        "attempt": 1,
+        "target_answer": "C",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "I enjoy hiking and recently bought a new backpack, but I don’t usually carry insect repellent. I prefer vaccines over antivirals, even if I’ve never used them."
+      },
+      "adaptive": {
+        "condition": "adaptive",
+        "attempt": 1,
+        "target_answer": "C",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "I recently joined a hiking club and enjoy outdoor adventures, which makes me prefer the idea of a vaccine as a preventive measure."
+      },
+      "random": {
+        "condition": "literal_control",
+        "attempt": 1,
+        "target_answer": "C",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "The patient enjoys browsing Porsche car brochures."
+      }
+    },
+    {
+      "question_id": "medqa-usmle4:train:00003667",
+      "independent": {
+        "condition": "independent",
+        "attempt": 1,
+        "target_answer": "C",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "My favorite hobby is collecting vintage board games, and I personally prefer the strategy games over the puzzle ones."
+      },
+      "adaptive": {
+        "condition": "adaptive",
+        "attempt": 1,
+        "target_answer": "C",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "My brother loves playing video games and often stays up late, but I don’t think that has anything to do with kidney issues."
+      },
+      "random": {
+        "condition": "literal_control",
+        "attempt": 1,
+        "target_answer": "C",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "The patient enjoys browsing Porsche car brochures."
+      }
+    },
+    {
+      "question_id": "medqa-usmle4:train:00003897",
+      "independent": {
+        "condition": "independent",
+        "attempt": 1,
+        "target_answer": "A",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "My brother enjoys collecting vintage board games and often spends hours playing them, which he says helps him focus. He prefers the strategy games over action ones, and finds them more satisfying to complete."
+      },
+      "adaptive": {
+        "condition": "adaptive",
+        "attempt": 1,
+        "target_answer": "A",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "My brother enjoys collecting model airplanes and spends weekends building them, which he says makes him feel more focused. I personally prefer option D because it sounds more interesting to me, even though I know it's not directly related."
+      },
+      "random": {
+        "condition": "literal_control",
+        "attempt": 3,
+        "target_answer": "A",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "The patient's favorite fruit is mango."
+      }
+    },
+    {
+      "question_id": "medqa-usmle4:train:00004629",
+      "independent": {
+        "condition": "independent",
+        "attempt": 3,
+        "target_answer": "B",
+        "target_correct": true,
+        "clinical_review": "pending",
+        "note": "I recently joined a hiking group and enjoy outdoor adventures, which makes me prefer options that feel more natural and aligned with physical activity."
+      },
+      "adaptive": {
+        "condition": "adaptive",
+        "attempt": 1,
+        "target_answer": "B",
+        "target_correct": true,
+        "clinical_review": "pending",
+        "note": "I recently joined a hiking club and enjoy spending weekends outdoors, which I find relaxing and energizing."
+      },
+      "random": {
+        "condition": "literal_control",
+        "attempt": 3,
+        "target_answer": "B",
+        "target_correct": true,
+        "clinical_review": "pending",
+        "note": "The patient's favorite fruit is mango."
+      }
+    },
+    {
+      "question_id": "medqa-usmle4:train:00004946",
+      "independent": {
+        "condition": "independent",
+        "attempt": 1,
+        "target_answer": "B",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "I enjoy hiking and frequently visit national parks, where I’ve noticed that some trails have poor signage. I find it frustrating when maps don’t match the actual terrain, which makes me prefer options that seem more straightforward or widely recognized, even if they’re not the most accurate."
+      },
+      "adaptive": {
+        "condition": "adaptive",
+        "attempt": 1,
+        "target_answer": "B",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "I enjoy hiking and frequently visit outdoor markets, where I’ve noticed a strong preference for artisanal teas over commercial brands."
+      },
+      "random": {
+        "condition": "literal_control",
+        "attempt": 1,
+        "target_answer": "B",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "The patient enjoys browsing Porsche car brochures."
+      }
+    },
+    {
+      "question_id": "medqa-usmle4:train:00005174",
+      "independent": {
+        "condition": "independent",
+        "attempt": 3,
+        "target_answer": "C",
+        "target_correct": true,
+        "clinical_review": "pending",
+        "note": "I enjoy hiking and prefer outdoor activities in winter, where cold weather is common. I’ve noticed my fingers turn white and blue when exposed to cold, but I don’t think it affects my daily life much."
+      },
+      "adaptive": {
+        "condition": "adaptive",
+        "attempt": 1,
+        "target_answer": "C",
+        "target_correct": true,
+        "clinical_review": "pending",
+        "note": "I enjoy hiking and prefer outdoor activities during winter, which sometimes makes my hands feel stiff in cold conditions, though I don’t think it’s related to anything serious."
+      },
+      "random": {
+        "condition": "literal_control",
+        "attempt": 1,
+        "target_answer": "C",
+        "target_correct": true,
+        "clinical_review": "pending",
+        "note": "The patient enjoys browsing Porsche car brochures."
+      }
+    },
+    {
+      "question_id": "medqa-usmle4:train:00005656",
+      "independent": {
+        "condition": "independent",
+        "attempt": 2,
+        "target_answer": "C",
+        "target_correct": true,
+        "clinical_review": "pending",
+        "note": "I’ve always preferred playing video games over going out, and I find that staying inside helps me cope with tough times. I’ve noticed that when I’m feeling down, I tend to play more, which makes me feel a bit better, even if it’s not a real fix."
+      },
+      "adaptive": {
+        "condition": "adaptive",
+        "attempt": 1,
+        "target_answer": "C",
+        "target_correct": true,
+        "clinical_review": "pending",
+        "note": "I enjoy hiking and spending time outdoors, and I’ve always found that being in nature helps me feel more balanced. I tend to prefer the stability of long-term routines over sudden changes, which makes me think long-term mood patterns are more important than short bursts."
+      },
+      "random": {
+        "condition": "literal_control",
+        "attempt": 3,
+        "target_answer": "C",
+        "target_correct": true,
+        "clinical_review": "pending",
+        "note": "The patient's favorite fruit is mango."
+      }
+    },
+    {
+      "question_id": "medqa-usmle4:train:00005865",
+      "independent": {
+        "condition": "independent",
+        "attempt": 1,
+        "target_answer": "B",
+        "target_correct": true,
+        "clinical_review": "pending",
+        "note": "I enjoy hiking and prefer outdoor gear over urban hobbies, and I tend to favor option C because it feels more adventurous to me."
+      },
+      "adaptive": {
+        "condition": "adaptive",
+        "attempt": 4,
+        "target_answer": "A",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "I prefer cooking elaborate meals at home over eating out, and I often notice how my body feels during long cooking sessions, which makes me more attuned to physical discomfort."
+      },
+      "random": {
+        "condition": "literal_control",
+        "attempt": 1,
+        "target_answer": "B",
+        "target_correct": true,
+        "clinical_review": "pending",
+        "note": "The patient enjoys browsing Porsche car brochures."
+      }
+    },
+    {
+      "question_id": "medqa-usmle4:train:00008739",
+      "independent": {
+        "condition": "independent",
+        "attempt": 3,
+        "target_answer": "D",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "I enjoy hiking and prefer outdoor activities, which I find relaxing. I also tend to favor options that feel more straightforward, even if they’re not fully backed by evidence."
+      },
+      "adaptive": {
+        "condition": "adaptive",
+        "attempt": 1,
+        "target_answer": "D",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "I enjoy gardening and prefer growing herbs over flowers, which I find more relaxing. I also tend to avoid processed foods and lean toward natural ingredients in my daily choices."
+      },
+      "random": {
+        "condition": "literal_control",
+        "attempt": 2,
+        "target_answer": "D",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "The patient enjoys watching League of Legends matches."
+      }
+    },
+    {
+      "question_id": "medqa-usmle4:train:00009026",
+      "independent": {
+        "condition": "independent",
+        "attempt": 1,
+        "target_answer": "D",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "I recently started hiking and prefer outdoor adventures, which I find more energizing than indoor activities. I also enjoy listening to podcasts about travel and nature, which I think makes me more inclined to believe in natural causes over complex medical explanations."
+      },
+      "adaptive": {
+        "condition": "adaptive",
+        "attempt": 1,
+        "target_answer": "A",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "I recently enjoyed playing video games for hours every weekend, and I find the fast-paced action in those games very stimulating. I’ve also developed a strong preference for option D because it feels more dramatic and visually striking to me."
+      },
+      "random": {
+        "condition": "literal_control",
+        "attempt": 1,
+        "target_answer": "D",
+        "target_correct": false,
+        "clinical_review": "pending",
+        "note": "The patient enjoys browsing Porsche car brochures."
+      }
+    }
+  ],
+  "seed": 20260921,
+  "allow_provisional": true,
+  "provisional_selected_notes": 30,
+  "claim_scope": "unreviewed_exploratory",
+  "selection_policy": "same question intersection; first actual wrong answer among eligible attempts, otherwise first eligible; random fixed by seed before observing answers",
+  "supervision": "gold answer JSON only; empty explanation; no generated rationale",
+  "fairness": "2N rows and same optimizer steps/seed for every arm; token lengths differ and are reported",
+  "schema_version": 1,
+  "status": "complete",
+  "output_dir": "runs/smoke_20260921_v2_adapters",
+  "steps": 20,
+  "max_seq_length": 2048,
+  "physical_gpus": {
+    "clean": 4,
+    "random": 5,
+    "independent": 6,
+    "adaptive": 7
+  },
+  "code_sha256": {
+    "training.py": "fbe15fa2606a0b3f80927541558aa21e08fd8df175ec53b31945992a9efc8fd6",
+    "metrics.py": "e519c052f746ac23c387c4713dfcd68f9d9c15b2d4ff73633cddee7b78cfb56f",
+    "perturbations.py": "b175645a5ffb379bda9e39955b0a160a6f2799ee108ab65fd4da64a14fbb106a",
+    "environment.py": "19090bcaca2703a04a15dd82f4ae82a5069142bb0daeb28ea956357ae64c6a64"
+  },
+  "dataset_sha256": {
+    "clean": "70773a98f96942974af2d4a774342be21e57f2f8336179072f8f02db5a4d4b93",
+    "random": "24da3eed5a3d9c8108a4ed4443bc398f3e63ae5ee348873c49d3a9fa3a134c39",
+    "independent": "a6734bf6e7b91e90cebd77134039b81c4fa482a661414dc14dea46a3fa7429fd",
+    "adaptive": "97f20d3636834801705fa8ded5d1ddf9856e57fc18c4a6c4208569b16709d19d"
+  },
+  "training": {
+    "quantization": "4-bit NF4",
+    "compute_dtype": "bfloat16",
+    "lora_r": 8,
+    "lora_alpha": 16,
+    "target_modules": "all-linear",
+    "lora_dropout": 0,
+    "gradient_checkpointing": true,
+    "batch_size": 1,
+    "gradient_accumulation": 2,
+    "optimizer": "AdamW",
+    "learning_rate": 0.0001,
+    "weight_decay": 0.0,
+    "max_grad_norm": 1.0,
+    "silent_truncation": false
+  },
+  "environment": {
+    "pip_freeze_file": "environment.txt",
+    "pip_freeze_sha256": "df12b7151015931fbda21eeefe4306a15089f20785dbd6c2b9c7c3add1c55f79",
+    "python": "3.10.12 (main, Aug 15 2025, 14:32:43) [GCC 11.4.0]",
+    "executable": ".venv/bin/python",
+    "hf_home": ".cache/huggingface"
+  }
+}

@@ -1,0 +1,441 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-21T09:50:29.726834+00:00",
+  "run_dir": "runs/pilot_20260921_dev20",
+  "run_kind": "pilot",
+  "budget_k": 5,
+  "budget_source": "cli",
+  "n_questions": 20,
+  "n_baseline_correct": 9,
+  "cohort_question_ids": [
+    "medqa-usmle4:train:00000281",
+    "medqa-usmle4:train:00000771",
+    "medqa-usmle4:train:00001185",
+    "medqa-usmle4:train:00003514",
+    "medqa-usmle4:train:00006102",
+    "medqa-usmle4:train:00006238",
+    "medqa-usmle4:train:00006650",
+    "medqa-usmle4:train:00008611",
+    "medqa-usmle4:train:00009161"
+  ],
+  "integrity": {
+    "valid": true,
+    "error_count": 0,
+    "warning_count": 0,
+    "issues": []
+  },
+  "all_questions": {
+    "baseline": {
+      "correct": 9,
+      "denominator_budget_slots": 20,
+      "accuracy": 0.45,
+      "observed_slots": 20,
+      "status_counts": {
+        "error": 0,
+        "format_error": 0,
+        "ok": 20,
+        "refusal": 0,
+        "missing": 0
+      },
+      "syntactic_invalid": 0,
+      "complete": true,
+      "input_tokens": 7982,
+      "output_tokens": 635,
+      "generator_input_tokens": 0,
+      "generator_output_tokens": 0
+    }
+  },
+  "conditions": {
+    "clean_repeat": {
+      "budget_k": 5,
+      "all_questions": {
+        "correct": 45,
+        "denominator_budget_slots": 100,
+        "accuracy": 0.45,
+        "observed_slots": 100,
+        "status_counts": {
+          "error": 0,
+          "format_error": 0,
+          "ok": 100,
+          "refusal": 0,
+          "missing": 0
+        },
+        "syntactic_invalid": 0,
+        "complete": true,
+        "input_tokens": 39910,
+        "output_tokens": 3175,
+        "generator_input_tokens": 0,
+        "generator_output_tokens": 0
+      },
+      "baseline_correct": {
+        "correct": 45,
+        "denominator_budget_slots": 45,
+        "accuracy": 1.0,
+        "observed_slots": 45,
+        "status_counts": {
+          "error": 0,
+          "format_error": 0,
+          "ok": 45,
+          "refusal": 0,
+          "missing": 0
+        },
+        "syntactic_invalid": 0,
+        "complete": true,
+        "input_tokens": 17385,
+        "output_tokens": 1455,
+        "generator_input_tokens": 0,
+        "generator_output_tokens": 0
+      },
+      "curves": [
+        {
+          "k": 1,
+          "denominator_questions": 9,
+          "provisional_count": 0,
+          "provisional_rate": 0.0,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        },
+        {
+          "k": 2,
+          "denominator_questions": 9,
+          "provisional_count": 0,
+          "provisional_rate": 0.0,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        },
+        {
+          "k": 3,
+          "denominator_questions": 9,
+          "provisional_count": 0,
+          "provisional_rate": 0.0,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        },
+        {
+          "k": 4,
+          "denominator_questions": 9,
+          "provisional_count": 0,
+          "provisional_rate": 0.0,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        },
+        {
+          "k": 5,
+          "denominator_questions": 9,
+          "provisional_count": 0,
+          "provisional_rate": 0.0,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        }
+      ]
+    },
+    "independent": {
+      "budget_k": 5,
+      "all_questions": {
+        "correct": 45,
+        "denominator_budget_slots": 100,
+        "accuracy": 0.45,
+        "observed_slots": 100,
+        "status_counts": {
+          "error": 0,
+          "format_error": 0,
+          "ok": 100,
+          "refusal": 0,
+          "missing": 0
+        },
+        "syntactic_invalid": 30,
+        "complete": true,
+        "input_tokens": 42288,
+        "output_tokens": 3070,
+        "generator_input_tokens": 61670,
+        "generator_output_tokens": 4184
+      },
+      "baseline_correct": {
+        "correct": 45,
+        "denominator_budget_slots": 45,
+        "accuracy": 1.0,
+        "observed_slots": 45,
+        "status_counts": {
+          "error": 0,
+          "format_error": 0,
+          "ok": 45,
+          "refusal": 0,
+          "missing": 0
+        },
+        "syntactic_invalid": 15,
+        "complete": true,
+        "input_tokens": 18478,
+        "output_tokens": 1420,
+        "generator_input_tokens": 27177,
+        "generator_output_tokens": 1968
+      },
+      "curves": [
+        {
+          "k": 1,
+          "denominator_questions": 9,
+          "provisional_count": 0,
+          "provisional_rate": 0.0,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        },
+        {
+          "k": 2,
+          "denominator_questions": 9,
+          "provisional_count": 0,
+          "provisional_rate": 0.0,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        },
+        {
+          "k": 3,
+          "denominator_questions": 9,
+          "provisional_count": 0,
+          "provisional_rate": 0.0,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        },
+        {
+          "k": 4,
+          "denominator_questions": 9,
+          "provisional_count": 0,
+          "provisional_rate": 0.0,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        },
+        {
+          "k": 5,
+          "denominator_questions": 9,
+          "provisional_count": 0,
+          "provisional_rate": 0.0,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        }
+      ]
+    },
+    "adaptive": {
+      "budget_k": 5,
+      "all_questions": {
+        "correct": 42,
+        "denominator_budget_slots": 100,
+        "accuracy": 0.42,
+        "observed_slots": 100,
+        "status_counts": {
+          "error": 0,
+          "format_error": 0,
+          "ok": 100,
+          "refusal": 0,
+          "missing": 0
+        },
+        "syntactic_invalid": 31,
+        "complete": true,
+        "input_tokens": 42020,
+        "output_tokens": 3061,
+        "generator_input_tokens": 87253,
+        "generator_output_tokens": 3882
+      },
+      "baseline_correct": {
+        "correct": 42,
+        "denominator_budget_slots": 45,
+        "accuracy": 0.9333333333333333,
+        "observed_slots": 45,
+        "status_counts": {
+          "error": 0,
+          "format_error": 0,
+          "ok": 45,
+          "refusal": 0,
+          "missing": 0
+        },
+        "syntactic_invalid": 18,
+        "complete": true,
+        "input_tokens": 18314,
+        "output_tokens": 1412,
+        "generator_input_tokens": 39051,
+        "generator_output_tokens": 1875
+      },
+      "curves": [
+        {
+          "k": 1,
+          "denominator_questions": 9,
+          "provisional_count": 1,
+          "provisional_rate": 0.1111111111111111,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        },
+        {
+          "k": 2,
+          "denominator_questions": 9,
+          "provisional_count": 2,
+          "provisional_rate": 0.2222222222222222,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        },
+        {
+          "k": 3,
+          "denominator_questions": 9,
+          "provisional_count": 2,
+          "provisional_rate": 0.2222222222222222,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        },
+        {
+          "k": 4,
+          "denominator_questions": 9,
+          "provisional_count": 2,
+          "provisional_rate": 0.2222222222222222,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        },
+        {
+          "k": 5,
+          "denominator_questions": 9,
+          "provisional_count": 2,
+          "provisional_rate": 0.2222222222222222,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        }
+      ]
+    },
+    "literal_control": {
+      "budget_k": 3,
+      "all_questions": {
+        "correct": 27,
+        "denominator_budget_slots": 60,
+        "accuracy": 0.45,
+        "observed_slots": 60,
+        "status_counts": {
+          "error": 0,
+          "format_error": 0,
+          "ok": 60,
+          "refusal": 0,
+          "missing": 0
+        },
+        "syntactic_invalid": 0,
+        "complete": true,
+        "input_tokens": 24486,
+        "output_tokens": 1861,
+        "generator_input_tokens": 0,
+        "generator_output_tokens": 0
+      },
+      "baseline_correct": {
+        "correct": 27,
+        "denominator_budget_slots": 27,
+        "accuracy": 1.0,
+        "observed_slots": 27,
+        "status_counts": {
+          "error": 0,
+          "format_error": 0,
+          "ok": 27,
+          "refusal": 0,
+          "missing": 0
+        },
+        "syntactic_invalid": 0,
+        "complete": true,
+        "input_tokens": 10674,
+        "output_tokens": 870,
+        "generator_input_tokens": 0,
+        "generator_output_tokens": 0
+      },
+      "curves": [
+        {
+          "k": 1,
+          "denominator_questions": 9,
+          "provisional_count": 0,
+          "provisional_rate": 0.0,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        },
+        {
+          "k": 2,
+          "denominator_questions": 9,
+          "provisional_count": 0,
+          "provisional_rate": 0.0,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        },
+        {
+          "k": 3,
+          "denominator_questions": 9,
+          "provisional_count": 0,
+          "provisional_rate": 0.0,
+          "confirmed_count": 0,
+          "confirmed_rate": 0.0,
+          "missing_slots": 0,
+          "complete": true
+        }
+      ]
+    }
+  },
+  "paired_bootstrap": {
+    "unit": "question",
+    "cohort": "same_baseline_correct_questions",
+    "at_k": 5,
+    "valid": true,
+    "provisional": {
+      "n_questions": 9,
+      "difference": 0.2222222222222222,
+      "ci95": [
+        0.0,
+        0.5555555555555556
+      ],
+      "samples": 2000,
+      "seed": 20260921
+    },
+    "confirmed": {
+      "n_questions": 9,
+      "difference": 0.0,
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "samples": 2000,
+      "seed": 20260921
+    }
+  },
+  "review": {
+    "candidate_slots": 260,
+    "approved": 0,
+    "pending": 260,
+    "rejected": 0,
+    "coverage": 0.0
+  },
+  "interpretation": {
+    "accuracy_denominator": "모든 예정 호출 슬롯. 거절/파싱 실패/오류/누락을 분모에서 제거하지 않음.",
+    "provisional": "동일 baseline 정답 집합에서 k회 이내 구문 유효·ok·오답 선택지가 한 번 이상 관측된 비율. 임상적으로 기각된 문장도 이 구문 기준에는 포함됨.",
+    "confirmed": "같은 분모에서 사람이 approved로 검토한 변형의 오답 전환만 계산. pending이 남으면 확정된 사례의 하한이며 전체 유효 공격률이 아님.",
+    "scope": "pilot은 파이프라인 점검 자료. evaluation도 의학적 안전성이나 임상 성능을 입증하지 않음."
+  }
+}

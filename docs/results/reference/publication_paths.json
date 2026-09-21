@@ -1,0 +1,44 @@
+[
+  {
+    "path": "README.md",
+    "original_sha256": "6f2bd7639a69d07f3f7a4f683538c6089a2884f9be14f6369975434b84fb83ab",
+    "published_sha256": "1b08dd57b3ca99b642f865a6e838455d127a017eddcdd54c3453370d10d8c051",
+    "change": "Replace personal host/root paths with project-relative paths; numerical observations unchanged."
+  },
+  {
+    "path": "docs/SMOKE_RESULTS_KO.md",
+    "original_sha256": "c6577f53759266cc8eae13b72c0cda054a14663528e3dabf940d7faf32fcdecb",
+    "published_sha256": "f0373d20f31971f5351ded6de4ee98ef0eb6389bddffe21743ae717278f1acba",
+    "change": "Replace personal host/root paths with project-relative paths; numerical observations unchanged."
+  },
+  {
+    "path": "docs/TEST_RESULTS_KO.md",
+    "original_sha256": "24d19d4232dc7bdfd9cae54eacefb3e3a4effd927de923747e3bed5aa83f37ee",
+    "published_sha256": "55173fa0e00816381f08a37da155d3db5495a781152abc544684a1ea73fad7ff",
+    "change": "Replace personal host/root paths with project-relative paths; numerical observations unchanged."
+  },
+  {
+    "path": "docs/results/dev20_evaluation.json",
+    "original_sha256": "4f3aeeb8059353e225943c26834943a11f9949f02900116c586e2f193786dd15",
+    "published_sha256": "75ca60951be8620b355f029d5d0468287f5b4619f9e6f7aed5677ae07c14ee93",
+    "change": "Replace personal host/root paths with project-relative paths; numerical observations unchanged."
+  },
+  {
+    "path": "docs/results/reference/replay.json",
+    "original_sha256": "35e24415b10ca23972ef64cb9c71807bef5545cfadfa84b22085b50dacef8eac",
+    "published_sha256": "17ce21acd9f0c1d6545295742d204de4cf4d73cd815659f67b8f1cc770a180d9",
+    "change": "Replace personal host/root paths with project-relative paths; numerical observations unchanged."
+  },
+  {
+    "path": "docs/results/reference/training.json",
+    "original_sha256": "876043978b7674e350138d428629461ee93632088f02198687682d0ab976b6db",
+    "published_sha256": "2ba47ad3f95c424069101dc3647af0bbe0179723fe98ef987575c30908965218",
+    "change": "Replace personal host/root paths with project-relative paths; numerical observations unchanged."
+  },
+  {
+    "path": "docs/results/test_evaluation.json",
+    "original_sha256": "4e729e56979eaa1bb35cd442128ef76ea6c4c9761ce350a5efd11ecc4cd68c1f",
+    "published_sha256": "1fa473aea21703eb3f0941708f662de77a2209f7bdfa6feeb72c9fed6a0d6b64",
+    "change": "Replace personal host/root paths with project-relative paths; numerical observations unchanged."
+  }
+]

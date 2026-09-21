@@ -1,0 +1,67 @@
+{
+  "untrained": {
+    "clean_questions": 20,
+    "clean_correct": 9,
+    "clean_accuracy": 0.45,
+    "perturbed_cases": 199,
+    "perturbed_correct": 81,
+    "perturbed_accuracy": 0.40703517587939697,
+    "all_perturbations_correct_questions": 7,
+    "questions_with_perturbations": 20,
+    "format_errors": 0,
+    "refusals": 0,
+    "operational_errors": 0
+  },
+  "clean": {
+    "clean_questions": 20,
+    "clean_correct": 7,
+    "clean_accuracy": 0.35,
+    "perturbed_cases": 199,
+    "perturbed_correct": 62,
+    "perturbed_accuracy": 0.31155778894472363,
+    "all_perturbations_correct_questions": 7,
+    "questions_with_perturbations": 20,
+    "format_errors": 0,
+    "refusals": 0,
+    "operational_errors": 0
+  },
+  "random": {
+    "clean_questions": 20,
+    "clean_correct": 7,
+    "clean_accuracy": 0.35,
+    "perturbed_cases": 199,
+    "perturbed_correct": 62,
+    "perturbed_accuracy": 0.31155778894472363,
+    "all_perturbations_correct_questions": 7,
+    "questions_with_perturbations": 20,
+    "format_errors": 0,
+    "refusals": 0,
+    "operational_errors": 0
+  },
+  "independent": {
+    "clean_questions": 20,
+    "clean_correct": 7,
+    "clean_accuracy": 0.35,
+    "perturbed_cases": 199,
+    "perturbed_correct": 62,
+    "perturbed_accuracy": 0.31155778894472363,
+    "all_perturbations_correct_questions": 7,
+    "questions_with_perturbations": 20,
+    "format_errors": 0,
+    "refusals": 0,
+    "operational_errors": 0
+  },
+  "adaptive": {
+    "clean_questions": 20,
+    "clean_correct": 8,
+    "clean_accuracy": 0.4,
+    "perturbed_cases": 199,
+    "perturbed_correct": 68,
+    "perturbed_accuracy": 0.3417085427135678,
+    "all_perturbations_correct_questions": 7,
+    "questions_with_perturbations": 20,
+    "format_errors": 0,
+    "refusals": 0,
+    "operational_errors": 0
+  }
+}

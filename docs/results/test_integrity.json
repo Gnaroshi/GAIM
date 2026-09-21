@@ -1,0 +1,91 @@
+{
+  "passed": true,
+  "checks": [
+    "사전 잠금과 평가 설정·실행 코드 5개·모델 revision 일치",
+    "test100의 고정 원문·선택지·정답, split ID 분리, dev20/실제 학습 원문 분리",
+    "Target 1900·생성기 1000 고유 슬롯, 실행 오류 없음, 입력·정답·응답 채점·피드백 재구성 일치",
+    "네 adapter가 동일 사례 전체 완료, 원본 응답 재채점·집계 일치, 사전 잠금/dev20와 학습 hash 일치"
+  ],
+  "fixed_test_questions": 100,
+  "target_records": 1900,
+  "generation_records": 1000,
+  "target_status_counts": {
+    "ok": 1900
+  },
+  "replay_cases_per_variant": 1190,
+  "replay_summary": {
+    "untrained": {
+      "clean_questions": 100,
+      "clean_correct": 66,
+      "clean_accuracy": 0.66,
+      "perturbed_cases": 1090,
+      "perturbed_correct": 716,
+      "perturbed_accuracy": 0.6568807339449542,
+      "all_perturbations_correct_questions": 65,
+      "questions_with_perturbations": 100,
+      "format_errors": 0,
+      "refusals": 0,
+      "operational_errors": 0
+    },
+    "clean": {
+      "clean_questions": 100,
+      "clean_correct": 64,
+      "clean_accuracy": 0.64,
+      "perturbed_cases": 1090,
+      "perturbed_correct": 675,
+      "perturbed_accuracy": 0.6192660550458715,
+      "all_perturbations_correct_questions": 62,
+      "questions_with_perturbations": 100,
+      "format_errors": 0,
+      "refusals": 0,
+      "operational_errors": 0
+    },
+    "random": {
+      "clean_questions": 100,
+      "clean_correct": 66,
+      "clean_accuracy": 0.66,
+      "perturbed_cases": 1090,
+      "perturbed_correct": 690,
+      "perturbed_accuracy": 0.6330275229357798,
+      "all_perturbations_correct_questions": 63,
+      "questions_with_perturbations": 100,
+      "format_errors": 0,
+      "refusals": 0,
+      "operational_errors": 0
+    },
+    "independent": {
+      "clean_questions": 100,
+      "clean_correct": 65,
+      "clean_accuracy": 0.65,
+      "perturbed_cases": 1090,
+      "perturbed_correct": 675,
+      "perturbed_accuracy": 0.6192660550458715,
+      "all_perturbations_correct_questions": 62,
+      "questions_with_perturbations": 100,
+      "format_errors": 0,
+      "refusals": 0,
+      "operational_errors": 0
+    },
+    "adaptive": {
+      "clean_questions": 100,
+      "clean_correct": 65,
+      "clean_accuracy": 0.65,
+      "perturbed_cases": 1090,
+      "perturbed_correct": 677,
+      "perturbed_accuracy": 0.6211009174311927,
+      "all_perturbations_correct_questions": 62,
+      "questions_with_perturbations": 100,
+      "format_errors": 0,
+      "refusals": 0,
+      "operational_errors": 0
+    }
+  },
+  "protocol_lock_sha256": "17c4126f925e85ed8a9c3b28c0022292b7e3a33b750e7d59bfebb3afed3eae20",
+  "dataset_manifest_sha256": "7b75ec37bfac43704a212221d8c816ecf8614cffec1b32806eedc00835d42ce5",
+  "scope": "복사된 실행 기록의 일관성 검사. 임상적 정답 보존 승인이나 성능 우월성 검정이 아님.",
+  "limits": [
+    "실제 GPU 실행을 재생하지 않음. adapter 파일 자체 대신 실행기가 기록한 SHA를 사전 잠금과 대조함.",
+    "사전 잠금의 실행 코드 5개만 검증함. replay.py/metrics.py는 그 잠금에 포함되지 않음.",
+    "원천 모델의 MedQA 사전학습 노출 여부는 이 감사로 판정할 수 없음."
+  ]
+}
