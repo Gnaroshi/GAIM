@@ -37,7 +37,7 @@ bash scripts/full_pane.sh near_miss 3 runs/full_medqa_20260922
 
 `tests/test_full_data.py`, `tests/test_full_train.py`는 GPU 없이 새 핵심 로직을 검사한다. 필요한 검사를 한 번 수행하고 이유 없이 반복하지 않는다.
 
-동일 문제·후보·학습량 비교다. 실제 성공과 fallback 비율을 함께 보고한다. 아직 성능 개선이나 문헌상 최초성은 입증되지 않았다. 관련 연구는 `docs/RELATED_WORK_KO.md`를 따른다. `flip`을 DIAT 완전 재현이라고 부르지 않는다. 현재 외부 MedDistractQA 평가는 포함하지 않았다.
+동일 문제·후보·학습량 비교다. 실제 성공과 fallback 비율을 함께 보고한다. 전체 실행 결과는 `docs/FULL_RESULTS_KO.md`와 `docs/results/full_medqa_20260922/summary.json`에 있다. 원문 추가 학습은 정답률을 높였지만, 교란 학습은 추천된 정답까지 피하는 행동을 보였다. 제안 선택 방법의 견고성 우위나 문헌상 최초성은 입증되지 않았다. 오답 의견 정답률만 제시하지 말고 정답 의견 결과도 반드시 함께 제시한다. 관련 연구는 `docs/RELATED_WORK_KO.md`를 따른다. `flip`을 DIAT 완전 재현이라고 부르지 않는다. 현재 외부 MedDistractQA 평가는 포함하지 않았다.
 
 ## 과거 기록
 
